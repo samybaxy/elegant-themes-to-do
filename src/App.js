@@ -64,6 +64,25 @@ function App() {
             </div>
         </div>
     );
+
+    return (
+        <div className="container">
+            <div className="row">
+                <div className="col col-md-6 offset-md-3 mt-2">
+                    <div className="todos-app card">
+                        {renderHeader()}
+                        <div className="card-body">
+                            <TodoList
+                                todos={todos}
+                                onComplete={handleCompleteTodo}
+                                onDelete={handleDeleteTodo}
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 }
 
 export default App;
