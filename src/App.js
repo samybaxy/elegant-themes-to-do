@@ -42,6 +42,28 @@ function App() {
     const handleDeleteTodo = ( id ) => {
         setTodos( todos.filter( (_, index) => index !== id ) );
     };
+
+    const renderHeader = () => (
+        <div className="todos-app-header card-header">
+            <h2>ToDo</h2>
+            <div className="input-group">
+                <input
+                    type="text"
+                    name="title"
+                    placeholder="What do you need to do?"
+                    className="form-control add-new-todo"
+                    onChange={handleChangeTitle}
+                    onKeyDown={handleEnterPressAdd}
+                    value={title}
+                />
+                <div className="input-group-append">
+                    <button className="btn btn-success" type="button" onClick={handleAddTodo}>
+                        <span style={{ fontSize: "24px", lineHeight: "16px", }}>+</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
 }
 
 export default App;
