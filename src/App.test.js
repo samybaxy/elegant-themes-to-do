@@ -8,27 +8,37 @@ import {
 import App from "./App";
 
 test("renders todo app", () => {
-  render(<App />);
-  const title = screen.getByText(/ToDo/i);
-  expect(title).toBeInTheDocument();
+    render(<App />);
+    const title = screen.getByText(/ToDo/i);
+    expect(title).toBeInTheDocument();
 });
 
 test("adds new todos", () => {
-  const { container } = render(<App />);
+    const { container } = render(<App />);
 
-  const todoText = "say hello to the world";
-  fireEvent.change(screen.getByPlaceholderText(/What do you need to do\?/i), {
-    target: { value: todoText },
-  });
+    const todoText = "say hello to the world";
 
-  expect(container.querySelector(".add-new-todo").value).toContain(todoText);
+    // Use a placeholder query to find the input field
+    const inputElement = screen.getByPlaceholderText(/What do you need to do\?/i);
 
-  fireEvent.click(screen.getByText(/\+/i));
+    // Simulate entering text into the input field
+    fireEvent.change(inputElement, { target: { value: todoText } });
+    
+    // Assert that the input field contains the entered text
+    expect(inputElement.value).toBe(todoText);
 
-  expect(container.querySelector(".todo-list").textContent).toContain(todoText);
-  expect(container.querySelector(".add-new-todo").value).not.toContain(
-    todoText
-  );
+    // Use a text query to find and click the add button
+    const addButton = screen.getByText(/\+/i);
+    fireEvent.click(addButton);
+
+    // Use a role query or text query to locate the todo list
+    const todoList = screen.getByRole("list"); // Assuming the list has a proper role
+
+    // Assert that the todo item was added to the list
+    expect(todoList).toHaveTextContent(todoText);
+
+    // Assert that the input field is cleared after adding the todo
+    expect(inputElement.value).toBe("");
 });
 
 test("marks todos as complete", async () => {
