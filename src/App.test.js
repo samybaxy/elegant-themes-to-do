@@ -3,6 +3,7 @@ import {
   screen,
   fireEvent,
   waitFor,
+  within,
 } from "@testing-library/react";
 import App from "./App";
 
@@ -44,13 +45,23 @@ test("marks todos as complete", async () => {
     const todoItem = await screen.findByText(todoText);
     expect(todoItem).toBeInTheDocument();
   
-    // Check the checkbox
-    const checkbox = screen.getByRole('checkbox');
-    fireEvent.click(checkbox);
+    // Check the checkboxes
+    const checkboxes = screen.getAllByRole('checkbox');
+    fireEvent.click(checkboxes[0]);
   
     // Wait for the todo to be marked as complete (assuming there's some visual change)
     await waitFor(() => {
-      expect(checkbox).toBeChecked();
+        expect(checkboxes[0]).toBeChecked();
+    });
+
+    expect(checkboxes[1]).not.toBeChecked();
+
+    // Now, let's mark the second todo as complete
+    fireEvent.click(checkboxes[1]);
+
+    // Wait for the second todo to be marked as complete
+    await waitFor(() => {
+        expect(checkboxes[1]).toBeChecked();
     });
   });
   
@@ -68,15 +79,17 @@ test("marks todos as complete", async () => {
     const todoItem = await screen.findByText(todoText);
     expect(todoItem).toBeInTheDocument();
   
-    // Delete the todo
-    const deleteButton = screen.getByText('X');
+    const todoItems = screen.getAllByRole('listitem');
+
+    // Assuming "Delete this test" is the second todo added
+    const deleteButton = within(todoItems[2]).getByRole('button', { name: /X/i });
+
     fireEvent.click(deleteButton);
-  
-    // Wait for the todo to be removed from the list
+
     await waitFor(() => {
-      expect(screen.queryByText(todoText)).not.toBeInTheDocument();
+        expect(screen.queryByText(todoText)).not.toBeInTheDocument();
     });
-  });
+});
   
   // Bug fix test if there was a bug or to ensure functionality
   test("input field is cleared after adding todo", () => {
